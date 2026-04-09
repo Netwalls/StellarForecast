@@ -185,9 +185,9 @@ export default function MarketPage() {
           {/* Header */}
           <div className="space-y-8">
             <div className="flex items-center gap-4">
-               {market.state === "Resolved" ? (
+               {market.state === "resolved" ? (
                 <span className="badge-resolved">Outcome Reached</span>
-              ) : market.state === "Closed" ? (
+              ) : market.state === "closed" ? (
                 <span className="badge-closed">In Deliberation</span>
               ) : (
                 <span className="badge-open">Open for Participation</span>
@@ -221,7 +221,7 @@ export default function MarketPage() {
 
           {/* Action Panels */}
           <div className="grid gap-12 pt-12 border-t border-brand-fg/5">
-            {market.state !== "Resolved" && market.state !== "Closed" && (
+            {market.state !== "resolved" && market.state !== "closed" && (
               <div className="card space-y-10">
                 <div className="flex flex-col gap-2">
                   <h2 className="text-3xl font-bold text-brand-fg">Participate in the prediction</h2>
@@ -306,7 +306,7 @@ export default function MarketPage() {
               </div>
             )}
 
-            {market.state === "Resolved" && (
+            {market.state === "resolved" && (
               <div className="card space-y-8 bg-brand-accent/5 border-brand-accent/10">
                 <div className="flex flex-col gap-2">
                   <h2 className="text-3xl font-bold text-brand-fg">Redeem your share</h2>
@@ -328,7 +328,7 @@ export default function MarketPage() {
               </div>
             )}
 
-            {market.state === "Closed" && (
+            {market.state === "closed" && (
               <div className="card space-y-8 bg-brand-yellow/5 border-brand-yellow/10">
                 <div className="flex flex-col gap-2">
                   <h2 className="text-3xl font-bold text-brand-fg">Consult AI Oracle</h2>

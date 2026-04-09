@@ -17,8 +17,14 @@ const {
 import { xdr } from "@stellar/stellar-sdk";
 import axios from "axios";
 import dotenv from "dotenv";
+import express from "express";
 
 dotenv.config();
+
+const app = express();
+app.use(express.json());
+const PORT = process.env.PORT || 3001;
+
 
 const RPC_URL      = process.env.RPC_URL      || "https://soroban-testnet.stellar.org";
 const HORIZON_URL  = process.env.HORIZON_URL  || "https://horizon-testnet.stellar.org";
@@ -90,29 +96,64 @@ async function setupTrustline() {
     }
 }
 
+async function scanAndResolve() {
+    console.log("🔍 Scanning for markets ready to resolve...");
+    try {
+        // Scan IDs from 1 upward; stop at the first missing entry
+        for (let i = 1; i <= 200; i++) {
+            const market = await fetchMarket(i);
+            if (!market) break;
+            if (isReadyToResolve(market)) {
+                console.log(`Market #${i} ready → "${market.question}"`);
+                await resolveMarket(i, String(market.question));
+            }
+        }
+    } catch (e) {
+        console.error("Scanning error:", e);
+    }
+}
+
+// ── Web Server for Triggers & Health Checks ───────────────────────────────────
+
+app.get("/", (req, res) => {
+    res.json({ status: "active", address: oracleKp.publicKey() });
+});
+
+app.post("/resolve", async (req, res) => {
+    const { market_id } = req.body;
+    console.log(`🚀 Manual trigger received for market #${market_id || "ALL"}`);
+    
+    if (market_id) {
+        const id = Number(market_id);
+        const market = await fetchMarket(id);
+        if (!market) {
+            return res.status(404).json({ error: `Market #${id} not found` });
+        }
+        // Force resolve attempt regardless of timer
+        resolveMarket(id, String(market.question));
+    } else {
+        scanAndResolve();
+    }
+    
+    res.json({ message: "Resolution cycle triggered" });
+});
+
 // ── Main loop ─────────────────────────────────────────────────────────────────
 
-async function run() {
-    console.log(`Oracle Agent started — address: ${oracleKp.publicKey()}`);
+async function main() {
+    console.log(`Oracle Agent starting — address: ${oracleKp.publicKey()}`);
     await setupTrustline();
 
-    while (true) {
-        try {
-            // Scan IDs from 1 upward; stop at the first missing entry
-            for (let i = 1; i <= 200; i++) {
-                const market = await fetchMarket(i);
-                if (!market) break;
-                if (isReadyToResolve(market)) {
-                    console.log(`Market #${i} ready → "${market.question}"`);
-                    await resolveMarket(i, String(market.question));
-                }
-            }
-        } catch (e) {
-            console.error("Oracle loop error:", e);
-        }
+    // Start Express server
+    app.listen(PORT, () => {
+        console.log(`✅ Oracle Server listening on port ${PORT}`);
+    });
 
-        await new Promise(r => setTimeout(r, 60_000));
-    }
+    // Initial scan
+    await scanAndResolve();
+
+    // Background loop every 60s
+    setInterval(scanAndResolve, 60_000);
 }
 
 // ── Contract reads (direct ledger) ───────────────────────────────────────────
@@ -329,4 +370,4 @@ async function submitResolution(id: number, outcome: number, evidence: string) {
     throw new Error("❌ Resolution Tx not confirmed within timeout");
 }
 
-run();
+main();
