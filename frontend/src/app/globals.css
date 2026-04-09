@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 26, 26, 26;
+  --background-rgb: 252, 250, 247;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-color: rgb(var(--background-rgb));
+  font-family: var(--font-outfit), sans-serif;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-serif), serif;
+  letter-spacing: -0.01em;
+}
+
+.card {
+  @apply bg-white border border-brand-fg/5 rounded-[2rem] p-8 transition-all duration-500 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.08)] hover:-translate-y-1;
+}
+
+.btn-primary {
+  @apply bg-brand-accent hover:bg-brand-fg text-white font-semibold py-4 px-8 rounded-2xl transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-brand-accent/5;
+}
+
+.btn-yes {
+  @apply bg-brand-green/10 hover:bg-brand-green text-brand-green hover:text-white font-bold py-3 px-6 rounded-2xl transition-all active:scale-95 border border-brand-green/20;
+}
+
+.btn-no {
+  @apply bg-brand-red/10 hover:bg-brand-red text-brand-red hover:text-white font-bold py-3 px-6 rounded-2xl transition-all active:scale-95 border border-brand-red/20;
+}
+
+.badge-open {
+  @apply bg-brand-sage/10 text-brand-green text-xs font-semibold px-3 py-1.5 rounded-full border border-brand-sage/20;
+}
+
+.badge-resolved {
+  @apply bg-brand-accent/10 text-brand-accent text-xs font-semibold px-3 py-1.5 rounded-full border border-brand-accent/20;
+}
+
+.badge-closed {
+  @apply bg-brand-yellow/10 text-brand-yellow text-xs font-semibold px-3 py-1.5 rounded-full border border-brand-yellow/20;
+}

@@ -1,0 +1,1 @@
+/Users/iamtechhunter/Documents/workspace/stellar-predict/contracts/target/wasm32-unknown-unknown/release/stellar_predict.wasm: /Users/iamtechhunter/Documents/workspace/stellar-predict/contracts/src/lib.rs
