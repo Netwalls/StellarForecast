@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, SlidersHorizontal, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
@@ -8,7 +8,15 @@ import MarketCard from "@/components/MarketCard";
 import { Market } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
 
-export default function MarketsExplorer() {
+export default function MarketsPage() {
+  return (
+    <Suspense>
+      <MarketsExplorer />
+    </Suspense>
+  );
+}
+
+function MarketsExplorer() {
   const searchParams = useSearchParams();
   const created = searchParams.get("created") === "true";
   const [markets, setMarkets] = useState<Market[]>([]);
