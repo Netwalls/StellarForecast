@@ -4,7 +4,9 @@
       "Bash(node -e ':*)",
       "Bash(npm install:*)",
       "Bash(npx ts-node:*)",
-      "Bash(wait)"
+      "Bash(wait)",
+      "Bash(cat /Users/iamtechhunter/Documents/workspace/stellar-predict/oracle/*.js)",
+      "Bash(cat /Users/iamtechhunter/Documents/workspace/stellar-predict/oracle/src/*.ts)"
     ]
   }
 }
